@@ -55,3 +55,14 @@ ib_insync==0.9.86
 | Zigzag consecutive same-kind | Keep more extreme | Ensures strictly alternating output |
 | Fib 261.8% fixture | Assert 4414.60 (formula) not spec's 4415.40 | Spec typo: 4900−300×1.618=4414.60 |
 | classic_pivots property | Assert R2+S2==2P (not R1+S1) | Spec typo; R1+S1==2P only when C=(H+L)/2 |
+
+## Phase 2
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Polygon ticker format | `I:{ROOT}` | Continuous futures index-style; overridable via resolve_symbol |
+| Ratio back-adjustment | `new_close/old_close` (not old/new) | Spec inverted; correct stitch zeroes roll gap |
+| IB fetch | Availability probe only; fetch raises | Avoid hard-failing without live Gateway |
+| Cache historical freshness | Skip staleness when as_of < max_cached | History immutable |
+| ES fixtures | 300-row RNG seed 42 from 2025-01-02 | Deterministic integration baseline |
+
