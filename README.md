@@ -12,10 +12,11 @@ CME/CBOT/NYMEX/COMEX futures **daily levels sheet** generator — print-ready 30
 4. [CLI](#cli)
 5. [GUI](#gui)
 6. [Configuration](#configuration)
-7. [Docker](#docker)
-8. [Development](#development)
-9. [Architecture](#architecture)
-10. [License](#license)
+7. [Cloud Agents](#cloud-agents)
+8. [Docker](#docker)
+9. [Development](#development)
+10. [Architecture](#architecture)
+11. [License](#license)
 
 ## Overview
 
@@ -79,6 +80,27 @@ Merge order (lowest → highest precedence):
 6. `LEVELSHEET__*` environment variables (e.g. `LEVELSHEET__THEME__BULLISH=#00FF00`)
 
 Theme hex codes, MA lengths, ATR length, branding, and cache staleness are all overridable without code changes.
+
+## Cloud Agents
+
+Cursor Cloud Agents boot from `.cursor/environment.json`:
+
+- **install** — `pip install -e ".[dev]"`, create dirs, warm Parquet cache via `scripts/bootstrap_cache.py`
+- **start** — Streamlit GUI on `0.0.0.0:8501` (headless)
+
+Optional secrets (set in the Cloud Agent environment / `.env`):
+
+| Secret | Required | Purpose |
+|--------|----------|---------|
+| `POLYGON_API_KEY` | No | Primary market-data provider |
+| `IB_ENABLED` | No | Set `true` only with a reachable TWS/Gateway |
+
+Nightly cache warming also runs via `.github/workflows/cache-bootstrap.yml` (weekdays 06:00 UTC + manual dispatch).
+
+```bash
+make bootstrap-cache   # pre-warm cache/{root}/{1d,1wk,1mo}.parquet
+make run-gui           # http://localhost:8501
+```
 
 ## Docker
 

@@ -96,7 +96,12 @@ def generate_sheet_data(
         config = config.model_copy(deep=True)
         config.pivots.method = pivot_method  # type: ignore[assignment]
     daily, weekly, monthly = fetch_frames(root, as_of, config, force_refresh=force_refresh)
-    return build_sheet_data(root, as_of, daily, weekly, monthly, config)
+    data = build_sheet_data(root, as_of, daily, weekly, monthly, config)
+    if config.plugins.enabled:
+        from levelsheet.plugins.registry import REGISTRY
+
+        data = REGISTRY.apply_all(data, config.plugins.enabled)
+    return data
 
 
 def generate_figure(

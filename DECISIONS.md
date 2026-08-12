@@ -103,3 +103,13 @@ ib_insync==0.9.86
 | Sample assets | `assets/sample_ES_sheet.png` + live render | README embed + visual acceptance |
 | Docker verification | `docker compose config` + image build when Docker available | Compose file validated; runtime needs daemon |
 | Date for acceptance demo | Prefer live trading day; fixtures cover 2026-02-25 | yfinance warm-cache path verified under 10s |
+
+## Cloud complete polish
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Logo | Procedural Pillow PNG (`assets/logo/logo.png`) | Matches theme navy/gold; no external asset dependency |
+| IB historical | `reqHistoricalData` via ContFuture, lazy ib_insync | Completes optional provider; still gated by IB_ENABLED + socket |
+| Nightly cache | GitHub Action cron + artifact upload | Spec §9 bootstrap for cron/GHA |
+| Cloud env | `.cursor/environment.json` install+start | Streamlit auto-starts on cloud agent boot |
+| Plugins in pipeline | Apply `config.plugins.enabled` after SheetData build | End-to-end override path without GUI changes |

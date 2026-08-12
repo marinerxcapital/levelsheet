@@ -1,0 +1,4 @@
+{
+  "install": "pip install -e \".[dev]\"\nmkdir -p logs cache output/pdf output/png assets/logo\ntest -f .env || cp .env.example .env\npython scripts/bootstrap_cache.py || true",
+  "start": "streamlit run src/levelsheet/gui/streamlit_app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true"
+}
