@@ -31,7 +31,7 @@ streamlit==1.61.1
 pydantic==2.13.4
 pydantic-settings==2.15.0
 loguru==0.7.3
-pyarrow==25.0.1
+pyarrow==19.0.1
 tenacity==9.1.4
 PyYAML==6.0.3
 pytest==9.1.1
@@ -43,3 +43,15 @@ ruff==0.16.2
 mypy==2.3.0
 ib_insync==0.9.86
 ```
+
+**Note:** `pyarrow` pinned to `19.0.1` (not latest 25.x) because `streamlit==1.61.1` requires `pyarrow<25`.
+
+## Phase 1
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| ATR fixture series | 15 synthetic OHLC bars in expected_values.json | Hand-computed Wilder ATR[14]=4.346938775510204 |
+| ElliottProjection.waves | list[dict] not raw DataFrame | Pydantic-serializable; conversion at boundary |
+| Zigzag consecutive same-kind | Keep more extreme | Ensures strictly alternating output |
+| Fib 261.8% fixture | Assert 4414.60 (formula) not spec's 4415.40 | Spec typo: 4900−300×1.618=4414.60 |
+| classic_pivots property | Assert R2+S2==2P (not R1+S1) | Spec typo; R1+S1==2P only when C=(H+L)/2 |
