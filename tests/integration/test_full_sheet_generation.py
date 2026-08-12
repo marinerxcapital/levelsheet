@@ -6,10 +6,9 @@ import json
 from pathlib import Path
 
 import pandas as pd
-from PIL import Image, ImageDraw
+from PIL import Image
 
 from levelsheet.config.loader import load_config
-from levelsheet.config.schema import LevelSheetConfig
 from levelsheet.render.compose import render_sheet
 from levelsheet.render.export_pdf import export_pdf
 from levelsheet.render.export_png import export_png
@@ -19,8 +18,12 @@ from levelsheet.render.theme import Theme
 
 def _load_frames() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     daily = pd.read_csv("tests/fixtures/ES_sample.csv", parse_dates=["date"]).set_index("date")
-    weekly = pd.read_csv("tests/fixtures/ES_weekly_sample.csv", parse_dates=["date"]).set_index("date")
-    monthly = pd.read_csv("tests/fixtures/ES_monthly_sample.csv", parse_dates=["date"]).set_index("date")
+    weekly = pd.read_csv("tests/fixtures/ES_weekly_sample.csv", parse_dates=["date"]).set_index(
+        "date"
+    )
+    monthly = pd.read_csv("tests/fixtures/ES_monthly_sample.csv", parse_dates=["date"]).set_index(
+        "date"
+    )
     for df in (daily, weekly, monthly):
         df.index = pd.DatetimeIndex(df.index).normalize()
         if "volume" in df.columns:

@@ -15,9 +15,16 @@ def draw(ax: Axes, data: SheetData, theme: Theme) -> None:
     """Draw 2×3 bias grid for configured MA lengths."""
     ax.axis("off")
     ax.text(
-        0.5, 0.98, "BIAS", transform=ax.transAxes, ha="center", va="top",
-        fontsize=FONT_SIZES["panel_header"], fontweight="bold",
-        color=theme.body_text, fontfamily=theme.font_family,
+        0.5,
+        0.98,
+        "BIAS",
+        transform=ax.transAxes,
+        ha="center",
+        va="top",
+        fontsize=FONT_SIZES["panel_header"],
+        fontweight="bold",
+        color=theme.body_text,
+        fontfamily=theme.font_family,
     )
     lengths = sorted(data.ma_bias.keys()) or [5, 13, 50, 100, 150, 200]
     lengths = lengths[:6]
@@ -33,17 +40,40 @@ def draw(ax: Axes, data: SheetData, theme: Theme) -> None:
         fill, text_c = bias_colors(b, theme)
         ax.add_patch(
             FancyBboxPatch(
-                (x, y), w, h, boxstyle="round,pad=0.02",
-                transform=ax.transAxes, facecolor=fill, edgecolor=theme.border,
-                linewidth=theme.border_width_pt, clip_on=False,
+                (x, y),
+                w,
+                h,
+                boxstyle="round,pad=0.02",
+                transform=ax.transAxes,
+                facecolor=fill,
+                edgecolor=theme.border,
+                linewidth=theme.border_width_pt,
+                clip_on=False,
             )
         )
-        ax.text(x + w / 2, y + h * 0.70, f"MA{length}", transform=ax.transAxes,
-                ha="center", va="center", fontsize=9, color=theme.body_text,
-                fontfamily=theme.font_family)
-        ax.text(x + w / 2, y + h * 0.30, b, transform=ax.transAxes,
-                ha="center", va="center", fontsize=FONT_SIZES["bias_word"],
-                fontweight="bold", color=text_c, fontfamily=theme.font_family)
+        ax.text(
+            x + w / 2,
+            y + h * 0.70,
+            f"MA{length}",
+            transform=ax.transAxes,
+            ha="center",
+            va="center",
+            fontsize=9,
+            color=theme.body_text,
+            fontfamily=theme.font_family,
+        )
+        ax.text(
+            x + w / 2,
+            y + h * 0.30,
+            b,
+            transform=ax.transAxes,
+            ha="center",
+            va="center",
+            fontsize=FONT_SIZES["bias_word"],
+            fontweight="bold",
+            color=text_c,
+            fontfamily=theme.font_family,
+        )
 
 
 def to_html(data: SheetData, theme: Theme) -> str:

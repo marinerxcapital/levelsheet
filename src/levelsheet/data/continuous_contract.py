@@ -57,9 +57,7 @@ def build_continuous_series(
     rule = rule or get_roll_rule(root)
     segments = _contract_sequence(root, start, end, rule)
     if not segments:
-        return pd.DataFrame(
-            columns=["open", "high", "low", "close", "volume", "contract"]
-        )
+        return pd.DataFrame(columns=["open", "high", "low", "close", "volume", "contract"])
 
     frames: list[pd.DataFrame] = []
     for code, seg_start, seg_end in segments:
@@ -76,7 +74,11 @@ def build_continuous_series(
         new_df = frames[i + 1]
         # roll boundary = last date of old segment
         roll_date = old_df.index.max()
-        old_close = float(old_df.loc[roll_date, "close"]) if roll_date in old_df.index else float(old_df["close"].iloc[-1])
+        old_close = (
+            float(old_df.loc[roll_date, "close"])
+            if roll_date in old_df.index
+            else float(old_df["close"].iloc[-1])
+        )
         # new contract close on/near roll date
         if roll_date in new_df.index:
             new_close = float(new_df.loc[roll_date, "close"])
@@ -94,9 +96,7 @@ def build_continuous_series(
         for col in ("open", "high", "low", "close"):
             adj[col] = adj[col] * cumulative
         adjusted.insert(0, adj)
-        logger.debug(
-            "roll adjust i={} ratio={:.6f} cumulative={:.6f}", i, ratio, cumulative
-        )
+        logger.debug("roll adjust i={} ratio={:.6f} cumulative={:.6f}", i, ratio, cumulative)
 
     continuous = pd.concat(adjusted).sort_index()
     continuous = continuous[~continuous.index.duplicated(keep="last")]

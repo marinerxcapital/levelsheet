@@ -7,7 +7,6 @@ from datetime import date
 from typing import Literal
 
 import pandas as pd
-from loguru import logger
 
 from levelsheet.errors import ProviderUnavailableError
 
@@ -34,7 +33,7 @@ class IBProvider:
         if os.environ.get(self.enabled_env, "").lower() != "true":
             return False
         try:
-            from ib_insync import IB  # type: ignore[import-untyped]
+            from ib_insync import IB
         except ImportError:
             return False
         ib = IB()

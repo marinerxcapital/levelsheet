@@ -66,3 +66,40 @@ ib_insync==0.9.86
 | Cache historical freshness | Skip staleness when as_of < max_cached | History immutable |
 | ES fixtures | 300-row RNG seed 42 from 2025-01-02 | Deterministic integration baseline |
 
+## Phase 3
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Sheet composer module | `render/compose.py` + `render/sheet_data.py` | Keeps panel modules pure draw functions |
+| Seaborn usage | `sns.set_theme` only | Spec forbids `sns.*plot` |
+| Sample layout fixture | `tests/fixtures/expected_layout.png` (5100×3300) | Pixel-diff / visual regression baseline |
+
+## Phase 4
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Default PDF engine | matplotlib `savefig` | Matches 17×11 canvas; weasyprint feature-flagged |
+| Book export | `PdfPages` | Spec §13 multi-page concatenation |
+
+## Phase 5
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Orchestration | `pipeline.py` | Shared by CLI + GUI; fixture fallback for ES offline |
+| CLI `symbols` vs config | Only merge dict-typed CLI overrides into config | Avoids argparse list colliding with `SymbolsConfig` |
+
+## Phase 6
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Config merge | Manual deep-merge then `model_validate` | Clear precedence; pydantic-settings for `LEVELSHEET__*` |
+| Sample plugin | `annotate_root` | Demonstrates registry without changing sheet numbers |
+
+## Phase 7
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Coverage omit | `gui/streamlit_app.py`, `__main__.py` | Streamlit side-effectful; package `__main__` thin re-export |
+| Sample assets | `assets/sample_ES_sheet.png` + live render | README embed + visual acceptance |
+| Docker verification | `docker compose config` + image build when Docker available | Compose file validated; runtime needs daemon |
+| Date for acceptance demo | Prefer live trading day; fixtures cover 2026-02-25 | yfinance warm-cache path verified under 10s |

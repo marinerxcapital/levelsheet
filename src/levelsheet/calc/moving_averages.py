@@ -11,14 +11,24 @@ from levelsheet.errors import InsufficientHistoryError
 def sma(series: pd.Series, length: int) -> pd.Series:
     """Simple moving average with min_periods=length (leading NaNs)."""
     result = series.rolling(window=length, min_periods=length).mean()
-    logger.debug("sma(length={}, n={}) -> last={}", length, len(series), result.iloc[-1] if len(result) else None)
+    logger.debug(
+        "sma(length={}, n={}) -> last={}",
+        length,
+        len(series),
+        result.iloc[-1] if len(result) else None,
+    )
     return result
 
 
 def ema(series: pd.Series, length: int) -> pd.Series:
     """Exponential moving average (adjust=False, min_periods=length)."""
     result = series.ewm(span=length, adjust=False, min_periods=length).mean()
-    logger.debug("ema(length={}, n={}) -> last={}", length, len(series), result.iloc[-1] if len(result) else None)
+    logger.debug(
+        "ema(length={}, n={}) -> last={}",
+        length,
+        len(series),
+        result.iloc[-1] if len(result) else None,
+    )
     return result
 
 
@@ -33,5 +43,7 @@ def projected_ma(ma_series: pd.Series) -> float:
         raise InsufficientHistoryError("projected_ma requires at least 2 non-NaN MA values")
     slope = float(ma_series.iloc[-1] - ma_series.iloc[-2])
     result = round(float(ma_series.iloc[-1] + slope), 2)
-    logger.debug("projected_ma(last={}, prev={}) -> {}", ma_series.iloc[-1], ma_series.iloc[-2], result)
+    logger.debug(
+        "projected_ma(last={}, prev={}) -> {}", ma_series.iloc[-1], ma_series.iloc[-2], result
+    )
     return result

@@ -28,14 +28,12 @@ def draw(ax: Axes, data: SheetData, theme: Theme) -> None:
     logo = Path(data.logo_path) if data.logo_path else Path("assets/logo/logo.png")
     if logo.exists():
         try:
-            from matplotlib.offsetbox import AnnotationBbox, OffsetImage
             import matplotlib.pyplot as plt
+            from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
             img = plt.imread(str(logo))
             imagebox = OffsetImage(img, zoom=0.15)
-            ab = AnnotationBbox(
-                imagebox, (0.95, 0.5), xycoords=ax.transAxes, frameon=False
-            )
+            ab = AnnotationBbox(imagebox, (0.95, 0.5), xycoords=ax.transAxes, frameon=False)
             ax.add_artist(ab)
         except Exception:  # noqa: BLE001
             pass

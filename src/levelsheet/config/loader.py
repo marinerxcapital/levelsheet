@@ -7,7 +7,6 @@ Merge order (lowest → highest):
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any
 
@@ -46,13 +45,10 @@ def _package_default_yaml() -> Path:
 
 
 def _cli_to_config_dict(cli_overrides: dict[str, Any] | None) -> dict[str, Any]:
-    """Map relevant CLI args into nested config overrides (only non-None)."""
+    """Map relevant CLI args into nested config overrides (only non-None dicts)."""
     if not cli_overrides:
         return {}
-    # Most CLI flags are command-specific and not config fields; only pass through
-    # known nested keys if present.
     out: dict[str, Any] = {}
-    # Allow direct nested dicts if callers pass them
     for key in (
         "symbols",
         "pivots",
@@ -69,8 +65,10 @@ def _cli_to_config_dict(cli_overrides: dict[str, Any] | None) -> dict[str, Any]:
         "render",
         "plugins",
     ):
-        if key in cli_overrides and cli_overrides[key] is not None:
-            out[key] = cli_overrides[key]
+        val = cli_overrides.get(key)
+        # Argparse also uses names like `symbols` for positional lists — only merge dicts.
+        if isinstance(val, dict):
+            out[key] = val
     return out
 
 

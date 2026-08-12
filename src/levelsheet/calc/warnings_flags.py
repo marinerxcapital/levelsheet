@@ -36,7 +36,9 @@ def is_blud(today: OHLCBar, yesterday: OHLCBar, close_proximity_pct: float = 25.
     undercut_low = today.low < yesterday.low
     closed_green = today.close > today.open
     day_range = today.high - today.low
-    near_high = day_range > 0 and (today.high - today.close) / day_range * 100 <= close_proximity_pct
+    near_high = (
+        day_range > 0 and (today.high - today.close) / day_range * 100 <= close_proximity_pct
+    )
     result = undercut_low and closed_green and near_high
     logger.debug("is_blud -> {}", result)
     return result

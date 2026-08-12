@@ -17,7 +17,12 @@ from levelsheet.data.providers import get_provider_chain
 from levelsheet.data.roll_calendar import RollRule, set_roll_rule_override
 from levelsheet.models.schemas import SheetData
 from levelsheet.render.compose import render_sheet
-from levelsheet.render.export_pdf import export_book, export_pdf, export_pdf_weasyprint, sheet_to_html
+from levelsheet.render.export_pdf import (
+    export_book,
+    export_pdf,
+    export_pdf_weasyprint,
+    sheet_to_html,
+)
 from levelsheet.render.export_png import export_png
 from levelsheet.render.sheet_data import build_sheet_data
 from levelsheet.render.theme import Theme
@@ -34,7 +39,9 @@ def load_fixture_frames(root: str = "ES") -> tuple[pd.DataFrame, pd.DataFrame, p
     base = Path("tests/fixtures")
     daily = pd.read_csv(base / f"{root}_sample.csv", parse_dates=["date"]).set_index("date")
     weekly = pd.read_csv(base / f"{root}_weekly_sample.csv", parse_dates=["date"]).set_index("date")
-    monthly = pd.read_csv(base / f"{root}_monthly_sample.csv", parse_dates=["date"]).set_index("date")
+    monthly = pd.read_csv(base / f"{root}_monthly_sample.csv", parse_dates=["date"]).set_index(
+        "date"
+    )
     for df in (daily, weekly, monthly):
         df.index = pd.DatetimeIndex(df.index).tz_localize(None).normalize()
         if "volume" in df.columns:
@@ -54,9 +61,15 @@ def fetch_frames(
     fetcher = CachedDataFetcher(providers, config)
     start = as_of - timedelta(days=365 * 3)
     try:
-        daily = fetcher.fetch(root, "1d", start, as_of, as_of_date=as_of, force_refresh=force_refresh)
-        weekly = fetcher.fetch(root, "1wk", start, as_of, as_of_date=as_of, force_refresh=force_refresh)
-        monthly = fetcher.fetch(root, "1mo", start, as_of, as_of_date=as_of, force_refresh=force_refresh)
+        daily = fetcher.fetch(
+            root, "1d", start, as_of, as_of_date=as_of, force_refresh=force_refresh
+        )
+        weekly = fetcher.fetch(
+            root, "1wk", start, as_of, as_of_date=as_of, force_refresh=force_refresh
+        )
+        monthly = fetcher.fetch(
+            root, "1mo", start, as_of, as_of_date=as_of, force_refresh=force_refresh
+        )
         # Slice to as_of
         daily = daily.loc[daily.index.date <= as_of]  # type: ignore[attr-defined]
         return daily, weekly, monthly
@@ -142,9 +155,7 @@ def build_sheet_bytes(
     return fig, pdf_buf.getvalue(), png_buf.getvalue()
 
 
-def build_book_bytes(
-    roots: list[str], as_of: date, config: LevelSheetConfig
-) -> bytes:
+def build_book_bytes(roots: list[str], as_of: date, config: LevelSheetConfig) -> bytes:
     """Build multi-page book PDF bytes."""
     sheets: list[tuple[str, Figure]] = []
     for root in roots:

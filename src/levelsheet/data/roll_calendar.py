@@ -64,9 +64,7 @@ def get_roll_rule(root: str) -> RollRule:
         return _OVERRIDE[key]
     if key in ROLL_CALENDAR:
         return ROLL_CALENDAR[key]
-    raise RollCalendarError(
-        f"No roll calendar entry for root={key!r}; supply --roll-rule-json"
-    )
+    raise RollCalendarError(f"No roll calendar entry for root={key!r}; supply --roll-rule-json")
 
 
 def _is_business_day(d: date) -> bool:

@@ -17,9 +17,13 @@ from levelsheet.render.theme import Theme
 def _load() -> tuple:
     daily = pd.read_csv("tests/fixtures/ES_sample.csv", parse_dates=["date"]).set_index("date")
     daily.index = pd.DatetimeIndex(daily.index).normalize()
-    weekly = pd.read_csv("tests/fixtures/ES_weekly_sample.csv", parse_dates=["date"]).set_index("date")
+    weekly = pd.read_csv("tests/fixtures/ES_weekly_sample.csv", parse_dates=["date"]).set_index(
+        "date"
+    )
     weekly.index = pd.DatetimeIndex(weekly.index).normalize()
-    monthly = pd.read_csv("tests/fixtures/ES_monthly_sample.csv", parse_dates=["date"]).set_index("date")
+    monthly = pd.read_csv("tests/fixtures/ES_monthly_sample.csv", parse_dates=["date"]).set_index(
+        "date"
+    )
     monthly.index = pd.DatetimeIndex(monthly.index).normalize()
     return daily, weekly, monthly
 

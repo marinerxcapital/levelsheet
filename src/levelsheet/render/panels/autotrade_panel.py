@@ -16,15 +16,27 @@ def draw(ax: Axes, data: SheetData, theme: Theme) -> None:
     ax.axis("off")
     ax.add_patch(
         Rectangle(
-            (0, 0.85), 1, 0.15, transform=ax.transAxes,
-            facecolor=theme.header_bg, edgecolor=theme.border,
-            linewidth=theme.border_width_pt, clip_on=False,
+            (0, 0.85),
+            1,
+            0.15,
+            transform=ax.transAxes,
+            facecolor=theme.header_bg,
+            edgecolor=theme.border,
+            linewidth=theme.border_width_pt,
+            clip_on=False,
         )
     )
     ax.text(
-        0.5, 0.925, "AUTOTRADE", transform=ax.transAxes, ha="center", va="center",
-        fontsize=FONT_SIZES["panel_header"], fontweight="bold",
-        color=theme.header_text, fontfamily=theme.font_family,
+        0.5,
+        0.925,
+        "AUTOTRADE",
+        transform=ax.transAxes,
+        ha="center",
+        va="center",
+        fontsize=FONT_SIZES["panel_header"],
+        fontweight="bold",
+        color=theme.header_text,
+        fontfamily=theme.font_family,
     )
     at = data.autotrade
     rows = [
@@ -39,10 +51,28 @@ def draw(ax: Axes, data: SheetData, theme: Theme) -> None:
     ]
     for i, (lab, val) in enumerate(rows):
         y = 0.80 - i * 0.10
-        ax.text(0.05, y, lab, transform=ax.transAxes, ha="left", va="center",
-                fontsize=8, color=theme.body_text, fontfamily=theme.font_family)
-        ax.text(0.95, y, val, transform=ax.transAxes, ha="right", va="center",
-                fontsize=8, color=theme.body_text, fontfamily=MONO_FONT_FAMILY)
+        ax.text(
+            0.05,
+            y,
+            lab,
+            transform=ax.transAxes,
+            ha="left",
+            va="center",
+            fontsize=8,
+            color=theme.body_text,
+            fontfamily=theme.font_family,
+        )
+        ax.text(
+            0.95,
+            y,
+            val,
+            transform=ax.transAxes,
+            ha="right",
+            va="center",
+            fontsize=8,
+            color=theme.body_text,
+            fontfamily=MONO_FONT_FAMILY,
+        )
 
 
 def to_html(data: SheetData, theme: Theme) -> str:

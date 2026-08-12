@@ -5,10 +5,13 @@ from __future__ import annotations
 from datetime import date
 
 import pandas as pd
-import pytest
 
 from levelsheet.data.continuous_contract import build_continuous_series
-from levelsheet.data.roll_calendar import RollRule, set_roll_rule_override, clear_roll_rule_overrides
+from levelsheet.data.roll_calendar import (
+    RollRule,
+    clear_roll_rule_overrides,
+    set_roll_rule_override,
+)
 
 
 class SyntheticProvider:
@@ -52,7 +55,9 @@ class SyntheticProvider:
 def test_continuous_contract_zero_discontinuity() -> None:
     clear_roll_rule_overrides()
     # Force known roll dates via fixed_calendar with months H,M,U
-    rule = RollRule(["H", "M", "U", "Z"], days_before_first_notice=0, roll_reference="fixed_calendar")
+    rule = RollRule(
+        ["H", "M", "U", "Z"], days_before_first_notice=0, roll_reference="fixed_calendar"
+    )
     set_roll_rule_override("TES", rule)
     try:
         # Build with a provider that returns per-contract series

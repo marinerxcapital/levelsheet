@@ -35,13 +35,12 @@ class CachedDataFetcher:
         if not meta_path.exists():
             return None
         try:
-            return json.loads(meta_path.read_text())
+            data: dict[str, Any] = json.loads(meta_path.read_text())
+            return data
         except (OSError, json.JSONDecodeError) as exc:
             raise CacheError(f"Corrupt meta {meta_path}") from exc
 
-    def _write_cache(
-        self, root: str, interval: str, df: pd.DataFrame, source: str
-    ) -> None:
+    def _write_cache(self, root: str, interval: str, df: pd.DataFrame, source: str) -> None:
         parquet_path, meta_path = self._paths(root, interval)
         parquet_path.parent.mkdir(parents=True, exist_ok=True)
         out = df.copy()
@@ -58,14 +57,15 @@ class CachedDataFetcher:
     def _read_cache(self, root: str, interval: str) -> pd.DataFrame:
         parquet_path, _ = self._paths(root, interval)
         try:
-            df = pd.read_parquet(parquet_path, engine="pyarrow")
+            df = pd.read_parquet(str(parquet_path), engine="auto")
         except Exception as exc:  # noqa: BLE001
             raise CacheError(f"Corrupt parquet {parquet_path}") from exc
         if not isinstance(df.index, pd.DatetimeIndex):
             if "date" in df.columns:
                 df = df.set_index("date")
             df.index = pd.DatetimeIndex(pd.to_datetime(df.index))
-        return df
+        result: pd.DataFrame = df
+        return result
 
     def _is_fresh(self, meta: dict[str, Any], as_of_date: date, df: pd.DataFrame) -> bool:
         max_cached = pd.Timestamp(df.index.max()).date()
@@ -93,9 +93,7 @@ class CachedDataFetcher:
             except Exception as exc:  # noqa: BLE001
                 errors.append(f"{provider.name}: {exc}")
                 logger.warning("Provider {} failed: {}", provider.name, exc)
-        raise ProviderUnavailableError(
-            f"All providers failed for {root}: {'; '.join(errors)}"
-        )
+        raise ProviderUnavailableError(f"All providers failed for {root}: {'; '.join(errors)}")
 
     def fetch(
         self,

@@ -4,10 +4,9 @@ from __future__ import annotations
 
 import os
 from datetime import date
-from typing import Literal
+from typing import Any, Literal
 
 import pandas as pd
-import requests
 from loguru import logger
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
@@ -34,12 +33,12 @@ class PolygonProvider:
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=8),
-        retry=retry_if_exception_type((requests.RequestException, TimeoutError)),
+        retry=retry_if_exception_type((TimeoutError, OSError)),
         reraise=True,
     )
     def _get_aggs(
         self, ticker: str, start: date, end: date, interval: Literal["1d", "1wk", "1mo"]
-    ) -> list[object]:
+    ) -> list[Any]:
         from polygon import RESTClient
 
         api_key = os.environ[self.api_key_env]
@@ -67,18 +66,18 @@ class PolygonProvider:
             raise ProviderUnavailableError(f"polygon failed for {ticker}") from exc
         if not aggs:
             raise ProviderUnavailableError(f"polygon returned empty data for {ticker}")
-        rows = []
+        rows: list[dict[str, Any]] = []
         for a in aggs:
-            ts = pd.to_datetime(getattr(a, "timestamp", None), unit="ms")
+            ts = pd.Timestamp(int(getattr(a, "timestamp")), unit="ms").normalize()
             rows.append(
                 {
-                    "date": ts.normalize(),
+                    "date": ts,
                     "open": float(a.open),
                     "high": float(a.high),
                     "low": float(a.low),
                     "close": float(a.close),
                     "volume": int(getattr(a, "volume", 0) or 0),
-                    "contract": getattr(a, "otc", None) or ticker,
+                    "contract": str(getattr(a, "otc", None) or ticker),
                 }
             )
         df = pd.DataFrame(rows).set_index("date").sort_index()

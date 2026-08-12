@@ -105,7 +105,9 @@ def build_sheet_data(
     lo_20 = float(daily["low"].tail(20).min()) if len(daily) >= 20 else None
 
     # Long-term fib from zigzag swings
-    swings = detect_swings_zigzag(daily, threshold_pct=config.fibonacci.long_term_swing_threshold_pct)
+    swings = detect_swings_zigzag(
+        daily, threshold_pct=config.fibonacci.long_term_swing_threshold_pct
+    )
     long_fib: dict[str, float] = {}
     if len(swings) >= 2:
         a, b = swings.iloc[-2], swings.iloc[-1]
@@ -129,7 +131,9 @@ def build_sheet_data(
 
     elliott = None
     try:
-        ew_swings = detect_swings_zigzag(daily, threshold_pct=config.elliott_wave.zigzag_threshold_pct)
+        ew_swings = detect_swings_zigzag(
+            daily, threshold_pct=config.elliott_wave.zigzag_threshold_pct
+        )
         if len(ew_swings) >= 6:
             elliott = elliott_wave_projection(ew_swings)
     except InsufficientHistoryError:

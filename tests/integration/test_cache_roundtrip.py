@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
-import pytest
 
 from levelsheet.config.schema import LevelSheetConfig
 from levelsheet.data.cache import CachedDataFetcher
-from levelsheet.errors import ProviderUnavailableError
 
 
 class FakeProvider:
@@ -33,12 +31,12 @@ def _sample_df(n: int = 10) -> pd.DataFrame:
     rows = []
     price = 5000.0
     for i in range(n):
-        o, h, l, c = price, price + 10, price - 10, price + 5
+        o, h, low, c = price, price + 10, price - 10, price + 5
         rows.append(
             {
                 "open": o,
                 "high": h,
-                "low": l,
+                "low": low,
                 "close": c,
                 "volume": 1000 + i,
                 "contract": "ESH24",

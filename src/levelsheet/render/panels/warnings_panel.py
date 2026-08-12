@@ -14,9 +14,16 @@ def draw(ax: Axes, data: SheetData, theme: Theme) -> None:
     """Draw stacked warning pills."""
     ax.axis("off")
     ax.text(
-        0.5, 0.98, "WARNINGS", transform=ax.transAxes, ha="center", va="top",
-        fontsize=FONT_SIZES["panel_header"], fontweight="bold",
-        color=theme.body_text, fontfamily=theme.font_family,
+        0.5,
+        0.98,
+        "WARNINGS",
+        transform=ax.transAxes,
+        ha="center",
+        va="top",
+        fontsize=FONT_SIZES["panel_header"],
+        fontweight="bold",
+        color=theme.body_text,
+        fontfamily=theme.font_family,
     )
     flags = [
         ("FALSE DAY", data.warnings.get("false_day", False)),
@@ -26,7 +33,12 @@ def draw(ax: Axes, data: SheetData, theme: Theme) -> None:
     for i, (lab, flagged) in enumerate(flags):
         y = 0.70 - i * 0.25
         draw_pill(
-            ax, 0.05, y, 0.90, 0.18, lab,
+            ax,
+            0.05,
+            y,
+            0.90,
+            0.18,
+            lab,
             theme.bearish if flagged else theme.neutral,
             "#FFFFFF" if flagged else theme.neutral,
             theme,

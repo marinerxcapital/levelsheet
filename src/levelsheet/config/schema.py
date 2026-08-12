@@ -49,7 +49,7 @@ class ElliottWaveConfig(BaseModel):
 class ATRConfig(BaseModel):
     """ATR length and method."""
 
-    length: int = Field(14, gt=0)
+    length: int = Field(default=14, gt=0)
     method: Literal["wilder"] = "wilder"
 
 

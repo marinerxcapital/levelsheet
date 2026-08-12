@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Literal
+from typing import Any, Literal, cast
 
 import pandas as pd
-import requests
 from loguru import logger
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
@@ -29,15 +28,13 @@ class YFinanceProvider:
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=8),
-        retry=retry_if_exception_type((requests.RequestException, TimeoutError)),
+        retry=retry_if_exception_type((TimeoutError, OSError)),
         reraise=True,
     )
-    def _download(
-        self, ticker: str, start: date, end: date, interval: str
-    ) -> pd.DataFrame:
+    def _download(self, ticker: str, start: date, end: date, interval: str) -> pd.DataFrame:
         import yfinance as yf
 
-        return yf.download(
+        raw: Any = yf.download(
             ticker,
             start=start.isoformat(),
             end=end.isoformat(),
@@ -45,6 +42,7 @@ class YFinanceProvider:
             progress=False,
             auto_adjust=False,
         )
+        return cast(pd.DataFrame, raw)
 
     def fetch_ohlc(
         self, symbol: str, start: date, end: date, interval: Literal["1d", "1wk", "1mo"]

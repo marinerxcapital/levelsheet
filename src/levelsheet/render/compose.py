@@ -32,9 +32,7 @@ from levelsheet.render.theme import Theme
 
 def _subplot(fig: Figure, gs: gridspec.GridSpec, name: str):  # type: ignore[no-untyped-def]
     region = SHEET_LAYOUT[name]
-    return fig.add_subplot(
-        gs[region.row_start : region.row_end, region.col_start : region.col_end]
-    )
+    return fig.add_subplot(gs[region.row_start : region.row_end, region.col_start : region.col_end])
 
 
 def render_sheet(data: SheetData, theme: Theme | None = None) -> FigureType:

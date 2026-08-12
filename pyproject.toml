@@ -53,6 +53,7 @@ levelsheet = ["config/default_config.yaml"]
 
 [tool.black]
 line-length = 100
+target-version = ["py312"]
 
 [tool.ruff]
 line-length = 100
@@ -86,7 +87,10 @@ pythonpath = ["src"]
 
 [tool.coverage.run]
 source = ["src/levelsheet"]
-omit = ["*/gui/streamlit_app.py"]
+omit = [
+    "*/gui/streamlit_app.py",
+    "*/__main__.py",
+]
 
 [tool.coverage.report]
 fail_under = 90

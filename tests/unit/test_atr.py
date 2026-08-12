@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import pytest
 from hypothesis import given, settings
@@ -44,11 +43,13 @@ def valid_ohlc(draw: st.DrawFn, n: int = 20) -> pd.DataFrame:
     price = draw(st.floats(min_value=50.0, max_value=200.0, allow_nan=False, allow_infinity=False))
     for _ in range(n):
         o = price
-        amplitude = draw(st.floats(min_value=0.1, max_value=5.0, allow_nan=False, allow_infinity=False))
+        amplitude = draw(
+            st.floats(min_value=0.1, max_value=5.0, allow_nan=False, allow_infinity=False)
+        )
         h = o + amplitude
-        l = o - amplitude
-        c = draw(st.floats(min_value=l, max_value=h, allow_nan=False, allow_infinity=False))
-        rows.append((o, h, l, c))
+        low = o - amplitude
+        c = draw(st.floats(min_value=low, max_value=h, allow_nan=False, allow_infinity=False))
+        rows.append((o, h, low, c))
         price = c
     return _ohlc_frame(rows)
 

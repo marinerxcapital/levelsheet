@@ -63,14 +63,24 @@ def draw(ax: Axes, data: SheetData, theme: Theme) -> None:
         fontfamily=theme.font_family,
     )
     draw_pill(
-        ax, 0.05, 0.35, 0.42, 0.15, "NR7",
+        ax,
+        0.05,
+        0.35,
+        0.42,
+        0.15,
+        "NR7",
         theme.bullish if data.nr7 else theme.neutral,
         "#FFFFFF" if data.nr7 else theme.neutral,
         theme,
         outline_only=not data.nr7,
     )
     draw_pill(
-        ax, 0.53, 0.35, 0.42, 0.15, "WR7",
+        ax,
+        0.53,
+        0.35,
+        0.42,
+        0.15,
+        "WR7",
         theme.bullish if data.wr7 else theme.neutral,
         "#FFFFFF" if data.wr7 else theme.neutral,
         theme,
@@ -88,18 +98,33 @@ def draw(ax: Axes, data: SheetData, theme: Theme) -> None:
         row = i // 2
         x = 0.05 + col * 0.48
         y = 0.18 - row * 0.16
-        ax.text(x, y, f"{lab}: {format_price(val or 0.0, data.decimals)}",
-                transform=ax.transAxes, ha="left", va="center",
-                fontsize=8, color=theme.body_text, fontfamily=theme.font_family)
+        ax.text(
+            x,
+            y,
+            f"{lab}: {format_price(val or 0.0, data.decimals)}",
+            transform=ax.transAxes,
+            ha="left",
+            va="center",
+            fontsize=8,
+            color=theme.body_text,
+            fontfamily=theme.font_family,
+        )
 
 
 def draw_hilo(ax: Axes, data: SheetData, theme: Theme) -> None:
     """Dedicated 7/20 hi-lo panel for layout slot hilo_7_20_panel."""
     ax.axis("off")
     ax.text(
-        0.5, 0.98, "7 / 20 HI-LO", transform=ax.transAxes, ha="center", va="top",
-        fontsize=FONT_SIZES["panel_header"], fontweight="bold",
-        color=theme.body_text, fontfamily=theme.font_family,
+        0.5,
+        0.98,
+        "7 / 20 HI-LO",
+        transform=ax.transAxes,
+        ha="center",
+        va="top",
+        fontsize=FONT_SIZES["panel_header"],
+        fontweight="bold",
+        color=theme.body_text,
+        fontfamily=theme.font_family,
     )
     items = [
         ("7-Day High", data.hi_7),
@@ -111,18 +136,38 @@ def draw_hilo(ax: Axes, data: SheetData, theme: Theme) -> None:
         y = 0.75 - i * 0.18
         ax.add_patch(
             Rectangle(
-                (0.0, y - 0.05), 1.0, 0.15, transform=ax.transAxes,
+                (0.0, y - 0.05),
+                1.0,
+                0.15,
+                transform=ax.transAxes,
                 facecolor=theme.open_settlement if i % 2 == 0 else "#FFFFFF",
-                edgecolor=theme.border, linewidth=theme.border_width_pt, clip_on=False,
+                edgecolor=theme.border,
+                linewidth=theme.border_width_pt,
+                clip_on=False,
             )
         )
-        ax.text(0.08, y + 0.025, lab, transform=ax.transAxes, ha="left", va="center",
-                fontsize=FONT_SIZES["table_label"], color=theme.body_text,
-                fontfamily=theme.font_family)
-        ax.text(0.92, y + 0.025, format_price(val or 0.0, data.decimals),
-                transform=ax.transAxes, ha="right", va="center",
-                fontsize=FONT_SIZES["table_value"], color=theme.body_text,
-                fontfamily=MONO_FONT_FAMILY)
+        ax.text(
+            0.08,
+            y + 0.025,
+            lab,
+            transform=ax.transAxes,
+            ha="left",
+            va="center",
+            fontsize=FONT_SIZES["table_label"],
+            color=theme.body_text,
+            fontfamily=theme.font_family,
+        )
+        ax.text(
+            0.92,
+            y + 0.025,
+            format_price(val or 0.0, data.decimals),
+            transform=ax.transAxes,
+            ha="right",
+            va="center",
+            fontsize=FONT_SIZES["table_value"],
+            color=theme.body_text,
+            fontfamily=MONO_FONT_FAMILY,
+        )
 
 
 def to_html(data: SheetData, theme: Theme) -> str:

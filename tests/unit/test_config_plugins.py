@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 from levelsheet.config.loader import load_config
-from levelsheet.plugins.registry import REGISTRY
 from levelsheet.models.schemas import SheetData
+from levelsheet.plugins.registry import REGISTRY
 
 
 def test_load_defaults() -> None:
@@ -18,7 +17,7 @@ def test_load_defaults() -> None:
 
 def test_levelsheet_yaml_override(tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "levelsheet.yaml").write_text("theme:\n  bullish: \"#00FF00\"\n")
+    (tmp_path / "levelsheet.yaml").write_text('theme:\n  bullish: "#00FF00"\n')
     cfg = load_config()
     assert cfg.theme.bullish == "#00FF00"
 
