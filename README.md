@@ -11,11 +11,13 @@ CME/CBOT/NYMEX/COMEX futures **daily levels sheet** generator — print-ready 30
 3. [Quick Start](#quick-start)
 4. [CLI](#cli)
 5. [GUI](#gui)
-6. [Configuration](#configuration)
-7. [Docker](#docker)
-8. [Development](#development)
-9. [Architecture](#architecture)
-10. [License](#license)
+6. [Phone & desktop access](#phone--desktop-access)
+7. [Configuration](#configuration)
+8. [Cloud Agents](#cloud-agents)
+9. [Docker](#docker)
+10. [Development](#development)
+11. [Architecture](#architecture)
+12. [License](#license)
 
 ## Overview
 
@@ -65,7 +67,41 @@ make run-gui
 # → http://localhost:8501
 ```
 
-Sidebar: symbol picker / custom root, date, pivot method. Tabs: Single Sheet (preview + PDF/PNG download) and Full Book.
+Sidebar: symbol picker / custom root, date, pivot method. Tabs: Single Sheet (PNG preview + PDF/PNG download) and Full Book. Works on desktop and mobile browsers.
+
+Optional lock for public hosts: set `LEVELSHEET_PASSWORD` in `.env` or Streamlit secrets.
+
+## Phone & desktop access
+
+Cursor Cloud Agents are for building — not a stable URL for your phone. Host the Streamlit GUI once, then open the same link on iPhone Safari and desktop Chrome.
+
+### Fastest public URL (Streamlit Community Cloud)
+
+1. Merge this repo to `main` (or deploy from a branch).
+2. Go to [share.streamlit.io](https://share.streamlit.io) → sign in with GitHub.
+3. **New app** → repo `marinerxcapital/levelsheet` → branch `main` →
+   Main file `src/levelsheet/gui/streamlit_app.py` → **Deploy**.
+4. In App settings → Secrets, add:
+
+```toml
+LEVELSHEET_PASSWORD = "choose-a-shared-password"
+POLYGON_API_KEY = "optional"
+```
+
+5. Open the `*.streamlit.app` URL on your iPhone and desktop. On iOS: Safari Share → **Add to Home Screen**.
+
+`packages.txt` and `.streamlit/config.toml` are already in the repo for Community Cloud.
+
+### Private URL (recommended for trading tools)
+
+Run Docker on any always-on machine, then expose only to you:
+
+```bash
+docker compose up -d
+# then Cloudflare Tunnel or Tailscale Serve → https://levelsheet.your-domain
+```
+
+Same password env var works: `LEVELSHEET_PASSWORD=...` in `.env`.
 
 ## Configuration
 
@@ -79,6 +115,27 @@ Merge order (lowest → highest precedence):
 6. `LEVELSHEET__*` environment variables (e.g. `LEVELSHEET__THEME__BULLISH=#00FF00`)
 
 Theme hex codes, MA lengths, ATR length, branding, and cache staleness are all overridable without code changes.
+
+## Cloud Agents
+
+Cursor Cloud Agents boot from `.cursor/environment.json`:
+
+- **install** — `pip install -e ".[dev]"`, create dirs, warm Parquet cache via `scripts/bootstrap_cache.py`
+- **start** — Streamlit GUI on `0.0.0.0:8501` (headless)
+
+Optional secrets (set in the Cloud Agent environment / `.env`):
+
+| Secret | Required | Purpose |
+|--------|----------|---------|
+| `POLYGON_API_KEY` | No | Primary market-data provider |
+| `IB_ENABLED` | No | Set `true` only with a reachable TWS/Gateway |
+
+Nightly cache warming also runs via `.github/workflows/cache-bootstrap.yml` (weekdays 06:00 UTC + manual dispatch).
+
+```bash
+make bootstrap-cache   # pre-warm cache/{root}/{1d,1wk,1mo}.parquet
+make run-gui           # http://localhost:8501
+```
 
 ## Docker
 

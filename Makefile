@@ -1,4 +1,4 @@
-.PHONY: install dev-install lint format typecheck test test-cov run-gui run-cli docker-build docker-run clean
+.PHONY: install dev-install lint format typecheck test test-cov run-gui run-cli bootstrap-cache docker-build docker-run clean
 
 install:
 	pip install -e .
@@ -23,10 +23,13 @@ test-cov:
 	pytest --cov=src/levelsheet --cov-report=term-missing --cov-fail-under=90
 
 run-gui:
-	streamlit run src/levelsheet/gui/streamlit_app.py --server.port 8501
+	streamlit run src/levelsheet/gui/streamlit_app.py --server.port 8501 --server.address 0.0.0.0
 
 run-cli:
 	python -m levelsheet generate $(SYMBOL) --date $(DATE) --format pdf,png
+
+bootstrap-cache:
+	python scripts/bootstrap_cache.py
 
 docker-build:
 	docker build -t levelsheet:latest .
