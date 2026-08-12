@@ -1,9 +1,12 @@
-"""LevelSheet argparse CLI. Fully wired in Phase 5."""
+"""LevelSheet argparse CLI."""
 
 from __future__ import annotations
 
 import argparse
 import sys
+from pathlib import Path
+
+from loguru import logger
 
 from levelsheet.errors import LevelSheetError
 from levelsheet.logging_config import configure_logging
@@ -44,25 +47,101 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _generate_command(args: argparse.Namespace) -> int:
+    from levelsheet.config.loader import load_config
+    from levelsheet.pipeline import apply_roll_rule_json, export_sheet_files, parse_date
+
+    config = load_config(cli_overrides=vars(args))
+    as_of = parse_date(args.date)
+    formats = [f.strip().lower() for f in args.format.split(",") if f.strip()]
+    for symbol in args.symbols:
+        if args.roll_rule_json:
+            apply_roll_rule_json(symbol, args.roll_rule_json)
+        paths = export_sheet_files(
+            symbol,
+            as_of,
+            config,
+            Path(args.output_dir),
+            formats,
+            force_refresh=args.force_refresh,
+        )
+        for kind, path in paths.items():
+            logger.info("Wrote {} -> {}", kind, path)
+            print(path)
+    return 0
+
+
+def _book_command(args: argparse.Namespace) -> int:
+    from levelsheet.config.loader import load_config
+    from levelsheet.pipeline import generate_figure, parse_date
+    from levelsheet.render.export_pdf import export_book
+
+    config = load_config(cli_overrides=vars(args))
+    as_of = parse_date(args.date)
+    symbols = [s.strip().upper() for s in args.symbols.split(",") if s.strip()]
+    sheets = []
+    for symbol in symbols:
+        _, fig = generate_figure(symbol, as_of, config)
+        sheets.append((symbol, fig))
+    export_book(sheets, Path(args.output))
+    logger.info("Wrote book -> {}", args.output)
+    print(args.output)
+    return 0
+
+
+def _cache_command(args: argparse.Namespace) -> int:
+    from datetime import date, timedelta
+
+    from levelsheet.config.loader import load_config
+    from levelsheet.data.cache import CachedDataFetcher
+    from levelsheet.data.providers import get_provider_chain
+
+    config = load_config(cli_overrides=vars(args))
+    fetcher = CachedDataFetcher(get_provider_chain(config), config)
+    end = date.today()
+    start = end - timedelta(days=365 * 3)
+    df = fetcher.fetch(
+        args.symbol,
+        args.interval,
+        start,
+        end,
+        as_of_date=end,
+        force_refresh=True,
+    )
+    logger.info("Refreshed {} {} -> {} rows", args.symbol, args.interval, len(df))
+    print(f"{args.symbol} {args.interval}: {len(df)} rows")
+    return 0
+
+
+def _config_command(args: argparse.Namespace) -> int:
+    from levelsheet.config.loader import load_config
+
+    config = load_config(cli_overrides=vars(args))
+    if args.config_command == "show":
+        print(config.model_dump_json(indent=2))
+    return 0
+
+
 def main() -> int:
-    """CLI entrypoint. Dispatch fully implemented in Phase 5."""
+    """CLI entrypoint."""
     args = build_parser().parse_args()
     configure_logging(debug=args.debug)
     try:
-        from levelsheet.config.loader import load_config
-
-        _config = load_config(cli_overrides=vars(args))
-        if args.command == "config" and getattr(args, "config_command", None) == "show":
-            print(_config.model_dump_json(indent=2))
-            return 0
-        print(f"Command '{args.command}' not yet fully implemented (Phase 5).", file=sys.stderr)
-        return 0
+        if args.command == "generate":
+            return _generate_command(args)
+        if args.command == "book":
+            return _book_command(args)
+        if args.command == "cache":
+            return _cache_command(args)
+        if args.command == "config":
+            return _config_command(args)
+        print(f"Unknown command {args.command}", file=sys.stderr)
+        return 1
     except LevelSheetError as exc:
-        from loguru import logger
-
         logger.error(str(exc))
         if args.debug:
             raise
+        print(str(exc), file=sys.stderr)
         return 1
 
 
