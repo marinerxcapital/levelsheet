@@ -36,7 +36,11 @@ def _parse_date(value: Optional[str]) -> date:
 
 def load_fixture_frames(root: str = "ES") -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Load committed CSV fixtures (used when network providers fail in tests/dev)."""
-    base = Path("tests/fixtures")
+    candidates = [
+        Path("tests/fixtures"),
+        Path(__file__).resolve().parents[2] / "tests" / "fixtures",
+    ]
+    base = next((p for p in candidates if (p / f"{root}_sample.csv").exists()), candidates[0])
     daily = pd.read_csv(base / f"{root}_sample.csv", parse_dates=["date"]).set_index("date")
     weekly = pd.read_csv(base / f"{root}_weekly_sample.csv", parse_dates=["date"]).set_index("date")
     monthly = pd.read_csv(base / f"{root}_monthly_sample.csv", parse_dates=["date"]).set_index(

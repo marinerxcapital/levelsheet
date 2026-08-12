@@ -114,8 +114,10 @@ def test_export_pdf_error(tmp_path: Path) -> None:
         export_pdf(fig, blocker / "out.pdf")
 
 
-def test_generate_sheet_data_and_book(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.chdir(Path("/workspace"))
+def test_generate_sheet_data_and_book(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, repo_root: Path
+) -> None:
+    monkeypatch.chdir(repo_root)
     cfg = load_config()
     cfg.data.cache.dir = str(tmp_path / "cache")
     data = generate_sheet_data("ES", date(2026, 2, 25), cfg, pivot_method="woodie")

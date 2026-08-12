@@ -38,8 +38,10 @@ def test_load_fixture_frames() -> None:
     assert len(w) > 0 and len(m) > 0
 
 
-def test_generate_figure_from_fixtures(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.chdir(Path("/workspace"))
+def test_generate_figure_from_fixtures(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, repo_root: Path
+) -> None:
+    monkeypatch.chdir(repo_root)
     cfg = load_config()
     cfg.data.cache.dir = str(tmp_path / "cache")
     data, fig = generate_figure("ES", date(2026, 2, 25), cfg)
@@ -47,16 +49,20 @@ def test_generate_figure_from_fixtures(tmp_path: Path, monkeypatch: pytest.Monke
     assert fig is not None
 
 
-def test_export_sheet_files(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.chdir(Path("/workspace"))
+def test_export_sheet_files(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, repo_root: Path
+) -> None:
+    monkeypatch.chdir(repo_root)
     cfg = load_config()
     cfg.data.cache.dir = str(tmp_path / "cache")
     paths = export_sheet_files("ES", date(2026, 2, 25), cfg, tmp_path / "out", ["pdf", "png"])
     assert paths["pdf"].exists() and paths["png"].exists()
 
 
-def test_build_sheet_bytes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.chdir(Path("/workspace"))
+def test_build_sheet_bytes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, repo_root: Path
+) -> None:
+    monkeypatch.chdir(repo_root)
     cfg = load_config()
     cfg.data.cache.dir = str(tmp_path / "cache")
     fig, pdf_b, png_b = build_sheet_bytes("ES", date(2026, 2, 25), cfg)
@@ -76,8 +82,8 @@ def test_cli_config_show(monkeypatch: pytest.MonkeyPatch) -> None:
     assert main() == 0
 
 
-def test_cli_generate(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.chdir(Path("/workspace"))
+def test_cli_generate(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, repo_root: Path) -> None:
+    monkeypatch.chdir(repo_root)
     out = tmp_path / "output"
     monkeypatch.setattr(
         "sys.argv",
@@ -97,8 +103,8 @@ def test_cli_generate(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     assert any(out.joinpath("png").glob("*.png"))
 
 
-def test_cli_book(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.chdir(Path("/workspace"))
+def test_cli_book(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, repo_root: Path) -> None:
+    monkeypatch.chdir(repo_root)
     out = tmp_path / "book.pdf"
     monkeypatch.setattr(
         "sys.argv",
