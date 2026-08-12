@@ -11,14 +11,6 @@ CME/CBOT/NYMEX/COMEX futures **daily levels sheet** generator — print-ready 30
 3. [Quick Start](#quick-start)
 4. [CLI](#cli)
 5. [GUI](#gui)
-<<<<<<< HEAD
-6. [Configuration](#configuration)
-7. [Cloud Agents](#cloud-agents)
-8. [Docker](#docker)
-9. [Development](#development)
-10. [Architecture](#architecture)
-11. [License](#license)
-=======
 6. [Phone & desktop access](#phone--desktop-access)
 7. [Configuration](#configuration)
 8. [Cloud Agents](#cloud-agents)
@@ -26,7 +18,6 @@ CME/CBOT/NYMEX/COMEX futures **daily levels sheet** generator — print-ready 30
 10. [Development](#development)
 11. [Architecture](#architecture)
 12. [License](#license)
->>>>>>> origin/main
 
 ## Overview
 
