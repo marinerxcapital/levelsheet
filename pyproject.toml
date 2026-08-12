@@ -1,0 +1,93 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "levelsheet"
+version = "0.1.0"
+description = "CME/CBOT/NYMEX/COMEX futures daily levels sheet generator"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas==3.0.5",
+    "numpy==2.5.2",
+    "scipy==1.18.0",
+    "yfinance==1.5.2",
+    "polygon-api-client==1.16.3",
+    "matplotlib==3.11.1",
+    "seaborn==0.13.2",
+    "Pillow==12.3.0",
+    "reportlab==5.0.0",
+    "weasyprint==69.0",
+    "streamlit==1.61.1",
+    "pydantic==2.13.4",
+    "pydantic-settings==2.15.0",
+    "loguru==0.7.3",
+    "pyarrow==25.0.1",
+    "tenacity==9.1.4",
+    "PyYAML==6.0.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "pytest-mock==3.15.1",
+    "hypothesis==6.165.3",
+    "black==26.5.1",
+    "ruff==0.16.2",
+    "mypy==2.3.0",
+    "pandas-stubs",
+    "types-PyYAML",
+]
+ib = ["ib_insync==0.9.86"]
+
+[project.scripts]
+levelsheet = "levelsheet.cli.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+levelsheet = ["config/default_config.yaml"]
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+mypy_path = "src"
+packages = ["levelsheet"]
+
+[[tool.mypy.overrides]]
+module = [
+    "yfinance.*",
+    "polygon.*",
+    "ib_insync.*",
+    "seaborn.*",
+    "weasyprint.*",
+    "reportlab.*",
+    "matplotlib.*",
+    "streamlit.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.coverage.run]
+source = ["src/levelsheet"]
+omit = ["*/gui/streamlit_app.py"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true

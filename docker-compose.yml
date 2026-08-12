@@ -1,0 +1,12 @@
+services:
+  levelsheet:
+    build: .
+    command: ["streamlit", "run", "src/levelsheet/gui/streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./cache:/app/cache
+      - ./output:/app/output
+      - ./logs:/app/logs
+    env_file:
+      - .env
