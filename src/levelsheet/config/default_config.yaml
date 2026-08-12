@@ -1,0 +1,76 @@
+symbols:
+  default_list: ["ES", "NQ", "CL", "GC", "SI", "ZB", "6E", "RTY"]
+  point_values: {}
+
+pivots:
+  method: classic
+  show_camarilla: false
+  show_woodie: false
+
+moving_averages:
+  lengths: [5, 13, 50, 100, 150, 200]
+  type: sma
+
+fibonacci:
+  retracement_ratios: [0.0, 0.236, 0.382, 0.5, 0.618, 0.764, 1.0]
+  extension_ratios: [1.272, 1.618, 2.0, 2.618]
+  long_term_swing_threshold_pct: 5.0
+
+elliott_wave:
+  zigzag_threshold_pct: 3.0
+
+atr:
+  length: 14
+  method: wilder
+
+autotrade:
+  stop_atr_mult: 1.0
+  trail_atr_mult: 0.5
+  target_atr_mult: 2.0
+  frequency: "1/day"
+  side: BOTH
+  contracts: 1
+  scale_out_pct: 50.0
+
+extreme_moves:
+  percentages: [0.5, 1.0, 1.5, 2.0, 3.0, 5.0]
+
+warnings:
+  rth_gap_threshold_pct: 0.15
+  close_proximity_pct: 25.0
+
+theme:
+  bullish: "#1B7A3D"
+  bullish_fill_light: "#E9F6EC"
+  bearish: "#B32020"
+  bearish_fill_light: "#FBE9E9"
+  key_level: "#F2C230"
+  key_level_text: "#5A4300"
+  open_settlement: "#ADD8E6"
+  neutral: "#8C8C8C"
+  header_bg: "#0B1F33"
+  header_text: "#FFFFFF"
+  border: "#333333"
+  font_family: "DejaVu Sans"
+
+branding:
+  company_name: "BPTC 26 LLC"
+  footer_text: "For educational purposes only. Not financial advice."
+  logo_path: "assets/logo/logo.png"
+
+data:
+  cache:
+    backend: parquet
+    dir: cache
+    max_staleness_hours: 18
+  providers:
+    polygon_api_key_env: POLYGON_API_KEY
+    ib_enabled_env: IB_ENABLED
+
+render:
+  engine: matplotlib
+  dpi: 300
+  page_size: letter_landscape
+
+plugins:
+  enabled: []
