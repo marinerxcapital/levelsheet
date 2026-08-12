@@ -11,12 +11,13 @@ CME/CBOT/NYMEX/COMEX futures **daily levels sheet** generator — print-ready 30
 3. [Quick Start](#quick-start)
 4. [CLI](#cli)
 5. [GUI](#gui)
-6. [Configuration](#configuration)
-7. [Cloud Agents](#cloud-agents)
-8. [Docker](#docker)
-9. [Development](#development)
-10. [Architecture](#architecture)
-11. [License](#license)
+6. [Phone & desktop access](#phone--desktop-access)
+7. [Configuration](#configuration)
+8. [Cloud Agents](#cloud-agents)
+9. [Docker](#docker)
+10. [Development](#development)
+11. [Architecture](#architecture)
+12. [License](#license)
 
 ## Overview
 
@@ -66,7 +67,41 @@ make run-gui
 # → http://localhost:8501
 ```
 
-Sidebar: symbol picker / custom root, date, pivot method. Tabs: Single Sheet (preview + PDF/PNG download) and Full Book.
+Sidebar: symbol picker / custom root, date, pivot method. Tabs: Single Sheet (PNG preview + PDF/PNG download) and Full Book. Works on desktop and mobile browsers.
+
+Optional lock for public hosts: set `LEVELSHEET_PASSWORD` in `.env` or Streamlit secrets.
+
+## Phone & desktop access
+
+Cursor Cloud Agents are for building — not a stable URL for your phone. Host the Streamlit GUI once, then open the same link on iPhone Safari and desktop Chrome.
+
+### Fastest public URL (Streamlit Community Cloud)
+
+1. Merge this repo to `main` (or deploy from a branch).
+2. Go to [share.streamlit.io](https://share.streamlit.io) → sign in with GitHub.
+3. **New app** → repo `marinerxcapital/levelsheet` → branch `main` →
+   Main file `src/levelsheet/gui/streamlit_app.py` → **Deploy**.
+4. In App settings → Secrets, add:
+
+```toml
+LEVELSHEET_PASSWORD = "choose-a-shared-password"
+POLYGON_API_KEY = "optional"
+```
+
+5. Open the `*.streamlit.app` URL on your iPhone and desktop. On iOS: Safari Share → **Add to Home Screen**.
+
+`packages.txt` and `.streamlit/config.toml` are already in the repo for Community Cloud.
+
+### Private URL (recommended for trading tools)
+
+Run Docker on any always-on machine, then expose only to you:
+
+```bash
+docker compose up -d
+# then Cloudflare Tunnel or Tailscale Serve → https://levelsheet.your-domain
+```
+
+Same password env var works: `LEVELSHEET_PASSWORD=...` in `.env`.
 
 ## Configuration
 

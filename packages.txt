@@ -1,0 +1,4 @@
+fonts-dejavu-core
+libpango-1.0-0
+libpangocairo-1.0-0
+libcairo2
